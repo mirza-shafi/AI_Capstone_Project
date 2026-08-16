@@ -71,7 +71,7 @@ product-facing value) — rather than relying on a single technique to carry bot
 | Backend | Python, FastAPI, SQLAlchemy, SQLite | Keeps API and ML/AI code in one process (no cross-service calls for inference); SQLite needs no separate DB server for a project this size and deploys free. |
 | AI/ML | scikit-learn, `joblib`, Groq API | scikit-learn gives a fast, explainable, evaluable baseline classifier; Groq (free tier, Llama 3.3 70B) handles the generative reply-drafting task. |
 | Frontend | React (Vite), Tailwind CSS | Fast dev loop, component-based UI suited to a queue/detail/analytics dashboard. |
-| Deployment | Render (backend), Vercel (frontend) | Both have functional free tiers and native support for Python/FastAPI and static/Vite frontends respectively. |
+| Deployment | Render (backend + frontend + Postgres) | One platform for all three pieces via a single `render.yaml` Blueprint — free tier, native support for Python/FastAPI and static Vite builds. |
 | Version control | Git + GitHub | Incremental commits per milestone (scaffold → backend → classifier → reply generation → frontend → deployment → docs). |
 
 ## 5. Scope Boundaries

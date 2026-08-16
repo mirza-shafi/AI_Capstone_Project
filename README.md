@@ -14,13 +14,13 @@ evaluation results, and conclusions).
 AI_Capstone_Project/
 ├── PROPOSAL.md         Problem statement, solution, AI approach, tech stack
 ├── REPORT.md           Final report: design decisions, results, conclusions
-├── render.yaml          Render Blueprint (backend web service + Postgres)
+├── render.yaml          Render Blueprint (backend + frontend + Postgres, all 3)
 ├── backend/            FastAPI app + AI/ML code
 │   ├── app/             API (routes, models, schemas, AI inference)
 │   ├── ml/               Dataset generation + classifier training
 │   └── tests/
 ├── frontend/            React (Vite) + Tailwind dashboard
-│   └── vercel.json       SPA rewrite rules
+│   └── vercel.json       SPA rewrite rules (only needed for the Vercel alternative)
 └── docs/screenshots/     Screenshots referenced from this README
 ```
 
@@ -31,7 +31,9 @@ AI_Capstone_Project/
 - **AI/ML**: scikit-learn (intent + urgency classifier), Groq API — Llama 3.3 70B (reply
   suggestion generation, free tier)
 - **Frontend**: React (Vite), Tailwind CSS
-- **Deployment**: Render (backend), Vercel (frontend)
+- **Deployment**: Render — backend (web service), frontend (static site), and database,
+  all three from one `render.yaml` Blueprint (Vercel works too for the frontend alone,
+  see below, but one platform is simpler to manage)
 
 ## AI Model Summary
 
@@ -66,26 +68,33 @@ npm run dev             # http://localhost:5180
 
 ## Deployment
 
-The backend deploys via the `render.yaml` Blueprint (web service + free Postgres,
-auto-wired). The frontend deploys as a static Vite build on Vercel. Order matters
-because each side needs the other's URL:
+Everything (backend web service, frontend static site, Postgres database) deploys from
+the single `render.yaml` Blueprint — one platform, one account. Because the backend and
+frontend each need the other's URL, there's a two-pass env var setup:
 
 1. **Push to GitHub** (this repo already syncs there — see the repo's remote).
-2. **Backend on Render**: [dashboard.render.com](https://dashboard.render.com) → New →
-   Blueprint → select this repo → Render reads `render.yaml` and provisions the web
-   service + database automatically. Before the first deploy finishes, set the two
-   `sync: false` env vars on the `triageiq-backend` service:
-   - `GROQ_API_KEY` — your key from [console.groq.com/keys](https://console.groq.com/keys)
-   - `ALLOWED_ORIGINS` — leave as `http://localhost:5180` for now, update after step 3
-   Note the deployed backend URL (`https://triageiq-backend-xxxx.onrender.com`).
-3. **Frontend on Vercel**: [vercel.com/new](https://vercel.com/new) → import this repo →
-   set **Root Directory** to `frontend` → add env var `VITE_API_URL` = the Render URL
-   from step 2 → Deploy. Note the deployed frontend URL.
-4. **Close the loop**: back in Render, update `ALLOWED_ORIGINS` to the Vercel URL from
-   step 3 (comma-separate if you keep localhost too) and let it redeploy.
+2. **One Blueprint deploy**: [dashboard.render.com](https://dashboard.render.com) → New
+   → Blueprint → select this repo → Render reads `render.yaml` and provisions all three
+   resources (`triageiq-backend`, `triageiq-frontend`, `triageiq-db`) together.
+3. **First pass — env vars Render can't fill in for you** (each is `sync: false` in the
+   Blueprint, meaning you set it manually once):
+   - On `triageiq-backend`: `GROQ_API_KEY` — free key from
+     [console.groq.com/keys](https://console.groq.com/keys). Leave `ALLOWED_ORIGINS` as
+     `http://localhost:5180` for now.
+   - On `triageiq-frontend`: `VITE_API_URL` — the `triageiq-backend` service's URL,
+     visible on its Render dashboard page (`https://triageiq-backend-xxxx.onrender.com`).
+     Setting this triggers a rebuild (it's baked in at build time, not read at runtime).
+4. **Close the loop**: once `triageiq-frontend` finishes building, copy *its* URL and
+   set it as `ALLOWED_ORIGINS` on `triageiq-backend` (comma-separate if keeping
+   localhost too), then let the backend redeploy.
 
-- Frontend: _TBD — add the Vercel URL here after deploying_
-- Backend API: _TBD — add the Render URL here after deploying (Swagger docs at `/docs`)_
+**Alternative**: the frontend can deploy to [Vercel](https://vercel.com/new) instead
+(import this repo, set **Root Directory** to `frontend`, same `VITE_API_URL` env var —
+`vercel.json` in the frontend folder already has the SPA rewrite rule it needs) if you'd
+rather split platforms; the backend steps above are unaffected either way.
+
+- Frontend: _TBD — add the deployed URL here_
+- Backend API: _TBD — add the deployed URL here (Swagger docs at `/docs`)_
 
 ## Screenshots
 

@@ -23,3 +23,18 @@ services:
         sync: false
       - key: ALLOWED_ORIGINS
         sync: false
+
+  - type: web
+    name: triageiq-frontend
+    runtime: static
+    plan: free
+    rootDir: frontend
+    buildCommand: "npm install && npm run build"
+    staticPublishPath: ./dist
+    envVars:
+      - key: VITE_API_URL
+        sync: false
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
