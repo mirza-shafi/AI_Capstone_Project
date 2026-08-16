@@ -93,8 +93,22 @@ frontend each need the other's URL, there's a two-pass env var setup:
 `vercel.json` in the frontend folder already has the SPA rewrite rule it needs) if you'd
 rather split platforms; the backend steps above are unaffected either way.
 
-- Frontend: _TBD — add the deployed URL here_
-- Backend API: _TBD — add the deployed URL here (Swagger docs at `/docs`)_
+- Frontend: [triageiq-frontend.onrender.com](https://triageiq-frontend.onrender.com)
+- Backend API: [triageiq-backend-clqq.onrender.com](https://triageiq-backend-clqq.onrender.com) (Swagger docs at `/docs`)
+
+## Usage
+
+1. Open the live frontend (link above). The **Inbox** tab shows the message queue,
+   sorted by urgency, filterable by status (Pending/Replied/All) and intent.
+2. Click **+ Simulate message** (top right) to add a new customer message — pick a
+   channel, write a message, and send it. It's automatically classified by intent and
+   urgency and appears in the queue immediately.
+3. Click any message to open it. Click **Draft with AI** to generate a suggested reply
+   grounded in the business FAQ context; edit the text freely, then **Send reply** to
+   mark it resolved (it moves to the Replied tab).
+4. Use **Reclassify** on a message to re-run the classifier on demand.
+5. The **Analytics** tab summarizes total/pending/replied counts, average response
+   time, resolution rate, and volume broken down by intent, urgency, and channel.
 
 ## Screenshots
 

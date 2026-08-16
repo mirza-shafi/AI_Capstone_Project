@@ -187,15 +187,25 @@ the intended usage pattern.
 
 ## 6. Deployment
 
-Backend deploys to Render via `render.yaml` (a Blueprint provisioning the web service
-and a free Postgres database together — Render's free web services have an *ephemeral*
-filesystem, so SQLite alone would lose all data on every redeploy or restart in
-production; the same SQLAlchemy code runs against SQLite locally and Postgres in
-production, selected purely by the `DATABASE_URL` environment variable). Frontend
-deploys to Vercel as a static Vite build, with a `vercel.json` rewrite rule so
-client-side routes (`/analytics`) resolve correctly on direct load/refresh.
+All three pieces — backend, frontend, and database — deploy from a single `render.yaml`
+Blueprint on Render. The backend is a Python web service; the frontend is a Render
+static site (a plain Vite build, served from a CDN, with a `routes` rewrite so
+client-side paths like `/analytics` resolve correctly on direct load/refresh instead of
+404ing); the database is Render's free Postgres. Render's free web services have an
+*ephemeral* filesystem, so SQLite alone would lose all data on every redeploy or
+restart in production — the same SQLAlchemy code runs against SQLite locally and
+Postgres in production, selected purely by the `DATABASE_URL` environment variable, so
+no application code differs between the two environments.
 
-<!-- Live URLs added here once deployed. -->
+- **Live app**: [triageiq-frontend.onrender.com](https://triageiq-frontend.onrender.com)
+- **Live API**: [triageiq-backend-clqq.onrender.com](https://triageiq-backend-clqq.onrender.com)
+  (interactive Swagger docs at `/docs`)
+
+Both the classifier training pipeline (`ml/generate_dataset.py` +
+`ml/train_classifier.py`) and the reply-generation/classification endpoints were
+re-verified against the live deployment, not just locally — the golden path (create a
+message → auto-classify → draft an AI reply via Groq → edit → send) and the Analytics
+page were both exercised directly against the production URLs above.
 
 ## 7. Limitations & Future Work
 
