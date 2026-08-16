@@ -44,3 +44,5 @@ class AnalyticsSummary(BaseModel):
     replied: int
     by_intent: dict[str, int]
     by_urgency: dict[str, int]
+    by_channel: dict[str, int]
+    avg_response_minutes: float | None

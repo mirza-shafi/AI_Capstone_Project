@@ -73,6 +73,24 @@ def test_invalid_channel_rejected(client):
     assert response.status_code == 422
 
 
+def test_analytics_summary(client):
+    create = client.post(
+        "/messages",
+        json={"customer_name": "Analytics Test", "channel": "messenger", "body": "hi"},
+    )
+    message_id = create.json()["id"]
+    client.post(f"/messages/{message_id}/reply", json={"reply_text": "hello back"})
+
+    response = client.get("/analytics/summary")
+    assert response.status_code == 200
+    body = response.json()
+    assert body["total"] >= 1
+    assert body["replied"] >= 1
+    assert body["by_channel"].get("messenger", 0) >= 1
+    assert body["avg_response_minutes"] is not None
+    assert body["avg_response_minutes"] >= 0
+
+
 def test_suggest_reply_without_api_key_fails_gracefully(client, monkeypatch):
     # Reset the cached client so a key removed by this test actually takes effect,
     # regardless of what ran (or didn't) before it in the same process.

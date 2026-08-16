@@ -29,4 +29,6 @@ export interface AnalyticsSummary {
   replied: number
   by_intent: Record<string, number>
   by_urgency: Record<string, number>
+  by_channel: Record<string, number>
+  avg_response_minutes: number | null
 }

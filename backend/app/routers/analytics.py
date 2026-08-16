@@ -3,7 +3,7 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.db import get_db
-from app.models import Message
+from app.models import Customer, Message
 from app.schemas import AnalyticsSummary
 
 router = APIRouter(prefix="/analytics", tags=["analytics"])
@@ -30,6 +30,24 @@ def summary(db: Session = Depends(get_db)):
             .group_by(Message.urgency)
         ).all()
     )
+    by_channel = dict(
+        db.execute(
+            select(Customer.channel, func.count(Message.id))
+            .join(Customer, Message.customer_id == Customer.id)
+            .group_by(Customer.channel)
+        ).all()
+    )
+
+    # Computed in Python rather than a DB-side date-diff function, since SQLite and
+    # Postgres (dev vs. production, see render.yaml) don't share one portable syntax
+    # for it — this table is small enough that it's not a real cost either way.
+    response_times = db.execute(
+        select(Message.created_at, Message.replied_at).where(Message.replied_at.is_not(None))
+    ).all()
+    avg_response_minutes = None
+    if response_times:
+        deltas_minutes = [(replied - created).total_seconds() / 60 for created, replied in response_times]
+        avg_response_minutes = round(sum(deltas_minutes) / len(deltas_minutes), 1)
 
     return AnalyticsSummary(
         total=total,
@@ -37,4 +55,6 @@ def summary(db: Session = Depends(get_db)):
         replied=total - pending,
         by_intent=by_intent,
         by_urgency=by_urgency,
+        by_channel=by_channel,
+        avg_response_minutes=avg_response_minutes,
     )
