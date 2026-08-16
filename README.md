@@ -8,6 +8,9 @@ See [PROPOSAL.md](./PROPOSAL.md) for the full problem statement, solution design
 AI approach, and [REPORT.md](./REPORT.md) for the final write-up (design decisions,
 evaluation results, and conclusions).
 
+**Demo video**: [docs/video/demo.mp4](./docs/video/demo.mp4) (click through to GitHub's
+file viewer to play it).
+
 ## Project Structure
 
 ```
@@ -21,7 +24,9 @@ AI_Capstone_Project/
 │   └── tests/
 ├── frontend/            React (Vite) + Tailwind dashboard
 │   └── vercel.json       SPA rewrite rules (only needed for the Vercel alternative)
-└── docs/screenshots/     Screenshots referenced from this README
+└── docs/
+    ├── screenshots/       Screenshots referenced from this README
+    └── video/demo.mp4     Short demo walkthrough
 ```
 
 ## Tech Stack
