@@ -71,3 +71,21 @@ def test_invalid_channel_rejected(client):
         json={"customer_name": "Bad Channel", "channel": "email", "body": "hi"},
     )
     assert response.status_code == 422
+
+
+def test_suggest_reply_without_api_key_fails_gracefully(client, monkeypatch):
+    # Reset the cached client so a key removed by this test actually takes effect,
+    # regardless of what ran (or didn't) before it in the same process.
+    import app.ai.reply_gen as reply_gen
+
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    monkeypatch.setattr(reply_gen, "_client", None)
+
+    create = client.post(
+        "/messages",
+        json={"customer_name": "No Key Test", "channel": "whatsapp", "body": "Hi, is this in stock?"},
+    )
+    message_id = create.json()["id"]
+
+    response = client.post(f"/messages/{message_id}/suggest-reply")
+    assert response.status_code == 503

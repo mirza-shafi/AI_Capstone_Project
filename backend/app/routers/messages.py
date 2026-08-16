@@ -1,10 +1,12 @@
 from datetime import datetime, timezone
 
+from anthropic import APIError
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import case, select
 from sqlalchemy.orm import Session
 
 from app.ai.classifier import classify_message
+from app.ai.reply_gen import generate_reply
 from app.db import get_db
 from app.models import Customer, Message
 from app.schemas import MessageCreate, MessageOut, ReplyIn
@@ -69,6 +71,24 @@ def reclassify_message(message_id: int, db: Session = Depends(get_db)):
     prediction = classify_message(message.body)
     for field, value in prediction.items():
         setattr(message, field, value)
+    db.commit()
+    db.refresh(message)
+    return message
+
+
+@router.post("/{message_id}/suggest-reply", response_model=MessageOut)
+def suggest_reply(message_id: int, db: Session = Depends(get_db)):
+    message = db.get(Message, message_id)
+    if message is None:
+        raise HTTPException(status_code=404, detail="Message not found")
+
+    try:
+        message.suggested_reply = generate_reply(message.body, message.intent)
+    except RuntimeError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
+    except APIError as exc:
+        raise HTTPException(status_code=502, detail=f"AI provider error: {exc}") from exc
+
     db.commit()
     db.refresh(message)
     return message
