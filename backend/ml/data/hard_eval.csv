@@ -1,0 +1,31 @@
+text,intent,urgency
+vai eta ki available ache?,Sales Inquiry,Low
+price koto porbe?,Sales Inquiry,Low
+bhaia XL size ache?,Sales Inquiry,Low
+kobe deliver hobe bolben?,Support-Technical,Medium
+"amar order ekhono ashe nai, koto din lagbe r?",Support-Technical,Medium
+plz help asap!! order stuck for days,Support-Technical,High
+bhaia refund ta ki hoise?,Support-Technical,Medium
+not bad but tbh I still want a partial refund,Complaint,Low
+"kinda disappointed ngl, quality thik na",Complaint,Low
+"this is soooo annoying, 3rd time hocche eita",Complaint,High
+"bhaia eita niye ki korbo bujhtesi na, product ta nosto",Complaint,Medium
+"literally the worst service ever tbh, want my money back rn",Complaint,High
+hey,Spam-Irrelevant,Low
+...,Spam-Irrelevant,Low
+yo is this legit or a scam,Sales Inquiry,Low
+free ta kivabe pabo?,Spam-Irrelevant,Low
+STILL waiting......,Complaint,Medium
+apu eita ki stock e ache akhon?,Sales Inquiry,Low
+bulk e nile discount pabo?,Sales Inquiry,Medium
+ei mia tumi ki manush naki bot,Spam-Irrelevant,Low
+subscribe to my channel for more!,Spam-Irrelevant,Low
+"can somebody PLEASE respond, this is ridiculous, 5 days now",Complaint,High
+"just checking in on my order, no rush though",Support-Technical,Low
+"amar order ta cancel korte chai, kivabe korbo?",Support-Technical,Low
+bhaia eita ki genuine leather?,Sales Inquiry,Low
+"wrong item pathaisen bhaia, eita ami order kori nai",Complaint,Medium
+kire bhai deal ache naki fake,Spam-Irrelevant,Low
+need this urgently for tomorrow's event pls confirm now!!,Sales Inquiry,High
+packet ta chira ashse but jinis thik ache,Complaint,Low
+apnara ki cod dhen naki advance lagbe?,Support-Technical,Low
