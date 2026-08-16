@@ -89,5 +89,11 @@ because each side needs the other's URL:
 
 ## Screenshots
 
-_Added in `docs/screenshots/` once the dashboard is built — see REPORT.md for the full
-walkthrough._
+_Pending — see [docs/screenshots/README.md](./docs/screenshots/README.md) for the exact
+3 shots needed and their filenames; this section will embed them once added._
+
+<!--
+![Inbox](./docs/screenshots/inbox.png)
+![AI reply suggestion](./docs/screenshots/ai-reply.png)
+![Analytics](./docs/screenshots/analytics.png)
+-->
