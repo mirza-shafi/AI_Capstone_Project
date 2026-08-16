@@ -8,7 +8,8 @@ wired up: `README.md` references them by these exact filenames.
    the left and the detail panel with intent/urgency badges on the right.
 2. **`ai-reply.png`** — Same detail panel after clicking "Draft with AI", showing the
    generated reply text in the editable textarea.
-3. **`analytics.png`** — Analytics page, showing the stat cards and the two bar charts.
+3. **`analytics.png`** — Analytics page: the 4 KPI stat cards, the intent donut chart,
+   the urgency bars, and the channel split bar.
 
 Local: run the app (`README.md` → Setup & Run Instructions) and open
 `http://localhost:5180`. Deployed: use the live Vercel URL instead once available.
