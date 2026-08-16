@@ -1,0 +1,25 @@
+databases:
+  - name: triageiq-db
+    plan: free
+    databaseName: triageiq
+    user: triageiq
+
+services:
+  - type: web
+    name: triageiq-backend
+    runtime: python
+    plan: free
+    rootDir: backend
+    buildCommand: "pip install -r requirements.txt && python ml/generate_dataset.py && python ml/train_classifier.py"
+    startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.14.3
+      - key: DATABASE_URL
+        fromDatabase:
+          name: triageiq-db
+          property: connectionString
+      - key: GROQ_API_KEY
+        sync: false
+      - key: ALLOWED_ORIGINS
+        sync: false

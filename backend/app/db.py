@@ -5,6 +5,10 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 from sqlalchemy.pool import StaticPool
 
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./triageiq.db")
+# Some hosts (Heroku-style) hand out "postgres://", which SQLAlchemy 1.4+ rejects —
+# normalize defensively since this is a cheap, harmless no-op otherwise.
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
 if DATABASE_URL == "sqlite:///:memory:":
     # In-memory SQLite needs a single shared connection (StaticPool), otherwise

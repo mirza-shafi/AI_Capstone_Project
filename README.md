@@ -14,19 +14,22 @@ evaluation results, and conclusions).
 AI_Capstone_Project/
 ├── PROPOSAL.md         Problem statement, solution, AI approach, tech stack
 ├── REPORT.md           Final report: design decisions, results, conclusions
+├── render.yaml          Render Blueprint (backend web service + Postgres)
 ├── backend/            FastAPI app + AI/ML code
 │   ├── app/             API (routes, models, schemas, AI inference)
 │   ├── ml/               Dataset generation + classifier training
 │   └── tests/
 ├── frontend/            React (Vite) + Tailwind dashboard
+│   └── vercel.json       SPA rewrite rules
 └── docs/screenshots/     Screenshots referenced from this README
 ```
 
 ## Tech Stack
 
-- **Backend**: Python, FastAPI, SQLAlchemy, SQLite
+- **Backend**: Python, FastAPI, SQLAlchemy — SQLite locally, Postgres in production
+  (Render free Postgres; the same code runs on both, only `DATABASE_URL` changes)
 - **AI/ML**: scikit-learn (intent + urgency classifier), Groq API — Llama 3.3 70B (reply
-  suggestion generation)
+  suggestion generation, free tier)
 - **Frontend**: React (Vite), Tailwind CSS
 - **Deployment**: Render (backend), Vercel (frontend)
 
@@ -61,10 +64,28 @@ cp .env.example .env   # set VITE_API_URL if backend isn't on localhost:8000
 npm run dev             # http://localhost:5180
 ```
 
-## Live Deployment
+## Deployment
 
-- Frontend: _TBD — added after deployment (Vercel)_
-- Backend API: _TBD — added after deployment (Render)_
+The backend deploys via the `render.yaml` Blueprint (web service + free Postgres,
+auto-wired). The frontend deploys as a static Vite build on Vercel. Order matters
+because each side needs the other's URL:
+
+1. **Push to GitHub** (this repo already syncs there — see the repo's remote).
+2. **Backend on Render**: [dashboard.render.com](https://dashboard.render.com) → New →
+   Blueprint → select this repo → Render reads `render.yaml` and provisions the web
+   service + database automatically. Before the first deploy finishes, set the two
+   `sync: false` env vars on the `triageiq-backend` service:
+   - `GROQ_API_KEY` — your key from [console.groq.com/keys](https://console.groq.com/keys)
+   - `ALLOWED_ORIGINS` — leave as `http://localhost:5180` for now, update after step 3
+   Note the deployed backend URL (`https://triageiq-backend-xxxx.onrender.com`).
+3. **Frontend on Vercel**: [vercel.com/new](https://vercel.com/new) → import this repo →
+   set **Root Directory** to `frontend` → add env var `VITE_API_URL` = the Render URL
+   from step 2 → Deploy. Note the deployed frontend URL.
+4. **Close the loop**: back in Render, update `ALLOWED_ORIGINS` to the Vercel URL from
+   step 3 (comma-separate if you keep localhost too) and let it redeploy.
+
+- Frontend: _TBD — add the Vercel URL here after deploying_
+- Backend API: _TBD — add the Render URL here after deploying (Swagger docs at `/docs`)_
 
 ## Screenshots
 
