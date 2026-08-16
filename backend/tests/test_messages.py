@@ -78,7 +78,7 @@ def test_suggest_reply_without_api_key_fails_gracefully(client, monkeypatch):
     # regardless of what ran (or didn't) before it in the same process.
     import app.ai.reply_gen as reply_gen
 
-    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    monkeypatch.delenv("GROQ_API_KEY", raising=False)
     monkeypatch.setattr(reply_gen, "_client", None)
 
     create = client.post(

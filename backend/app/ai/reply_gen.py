@@ -1,6 +1,6 @@
 import os
 
-from anthropic import Anthropic
+from groq import Groq
 
 FAQ_CONTEXT = """
 Business policy quick reference:
@@ -19,18 +19,20 @@ that acknowledges the issue and says the team is checking, rather than making so
 
 {FAQ_CONTEXT}"""
 
-_client: Anthropic | None = None
+MODEL = "llama-3.3-70b-versatile"
+
+_client: Groq | None = None
 
 
-def _get_client() -> Anthropic:
+def _get_client() -> Groq:
     global _client
     if _client is None:
-        api_key = os.getenv("ANTHROPIC_API_KEY")
+        api_key = os.getenv("GROQ_API_KEY")
         if not api_key:
             raise RuntimeError(
-                "ANTHROPIC_API_KEY is not set — add it to backend/.env to enable reply suggestions."
+                "GROQ_API_KEY is not set — add it to backend/.env to enable reply suggestions."
             )
-        _client = Anthropic(api_key=api_key)
+        _client = Groq(api_key=api_key)
     return _client
 
 
@@ -39,10 +41,12 @@ def generate_reply(message_text: str, intent: str | None) -> str:
     intent_line = f"Detected intent: {intent}\n" if intent else ""
     user_prompt = f'{intent_line}Customer message: "{message_text}"\n\nDraft a reply.'
 
-    response = client.messages.create(
-        model="claude-sonnet-5",
+    response = client.chat.completions.create(
+        model=MODEL,
         max_tokens=300,
-        system=SYSTEM_PROMPT,
-        messages=[{"role": "user", "content": user_prompt}],
+        messages=[
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": user_prompt},
+        ],
     )
-    return response.content[0].text.strip()
+    return response.choices[0].message.content.strip()

@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 
-from anthropic import APIError
 from fastapi import APIRouter, Depends, HTTPException
+from groq import APIError
 from sqlalchemy import case, select
 from sqlalchemy.orm import Session
 

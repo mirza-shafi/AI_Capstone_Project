@@ -25,7 +25,7 @@ AI_Capstone_Project/
 ## Tech Stack
 
 - **Backend**: Python, FastAPI, SQLAlchemy, SQLite
-- **AI/ML**: scikit-learn (intent + urgency classifier), Anthropic Claude API (reply
+- **AI/ML**: scikit-learn (intent + urgency classifier), Groq API — Llama 3.3 70B (reply
   suggestion generation)
 - **Frontend**: React (Vite), Tailwind CSS
 - **Deployment**: Render (backend), Vercel (frontend)
@@ -36,7 +36,7 @@ AI_Capstone_Project/
 |---|---|---|
 | Intent classification (Sales / Support / Complaint / Spam) | TF-IDF + Logistic Regression (scikit-learn) | Trained on a synthetic labeled dataset; evaluated with accuracy/precision/recall/F1 on a held-out split — see `backend/ml/metrics.json` after training and REPORT.md for full results. |
 | Urgency scoring (Low / Medium / High) | Same classifier pipeline, second label | Same dataset/evaluation as above. |
-| Reply suggestion | Claude API (prompted with message + detected intent + FAQ context) | Generative — evaluated qualitatively, not accuracy-scored. |
+| Reply suggestion | Groq API, Llama 3.3 70B (prompted with message + detected intent + FAQ context) | Generative — evaluated qualitatively, not accuracy-scored. |
 
 ## Setup & Run Instructions
 
@@ -46,7 +46,7 @@ AI_Capstone_Project/
 cd backend
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-cp .env.example .env   # add your ANTHROPIC_API_KEY
+cp .env.example .env   # add your GROQ_API_KEY (free — console.groq.com/keys)
 python ml/generate_dataset.py    # generates backend/ml/data/messages.csv
 python ml/train_classifier.py    # trains + evaluates, writes model.joblib + metrics.json
 uvicorn app.main:app --reload    # http://localhost:8000  (docs at /docs)
@@ -58,7 +58,7 @@ uvicorn app.main:app --reload    # http://localhost:8000  (docs at /docs)
 cd frontend
 npm install
 cp .env.example .env   # set VITE_API_URL if backend isn't on localhost:8000
-npm run dev             # http://localhost:5173
+npm run dev             # http://localhost:5180
 ```
 
 ## Live Deployment

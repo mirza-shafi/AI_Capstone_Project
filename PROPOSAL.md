@@ -52,11 +52,13 @@ Two complementary AI techniques are used, each doing the part it is best suited 
    cheap to run on every incoming message, and its accuracy can be measured directly
    (accuracy, per-class precision/recall/F1, confusion matrix) against a held-out test
    set, giving a concrete, reportable measure of effectiveness.
-2. **Generation (LLM — Claude API).** For reply drafting, a large language model is
-   better suited than a classifier: it needs to produce fluent, context-appropriate free
-   text. The prompt combines the customer's message, the classifier's detected intent,
-   and a short hardcoded FAQ/policy snippet (lightweight retrieval) so drafts stay
-   grounded rather than generic.
+2. **Generation (LLM — Groq API, Llama 3.3 70B).** For reply drafting, a large language
+   model is better suited than a classifier: it needs to produce fluent,
+   context-appropriate free text. The prompt combines the customer's message, the
+   classifier's detected intent, and a short hardcoded FAQ/policy snippet (lightweight
+   retrieval) so drafts stay grounded rather than generic. Groq was chosen over a paid
+   frontier-model API specifically so the project stays reproducible on a free tier — the
+   generation quality/latency tradeoff is discussed in the Final Report.
 
 Using both together means the system is graded on a real, measurable classifier
 (quantitative evaluation) *and* a visibly useful generative feature (qualitative,
@@ -67,7 +69,7 @@ product-facing value) — rather than relying on a single technique to carry bot
 | Layer | Choice | Why |
 |---|---|---|
 | Backend | Python, FastAPI, SQLAlchemy, SQLite | Keeps API and ML/AI code in one process (no cross-service calls for inference); SQLite needs no separate DB server for a project this size and deploys free. |
-| AI/ML | scikit-learn, `joblib`, Anthropic Claude API | scikit-learn gives a fast, explainable, evaluable baseline classifier; Claude API handles the generative reply-drafting task. |
+| AI/ML | scikit-learn, `joblib`, Groq API | scikit-learn gives a fast, explainable, evaluable baseline classifier; Groq (free tier, Llama 3.3 70B) handles the generative reply-drafting task. |
 | Frontend | React (Vite), Tailwind CSS | Fast dev loop, component-based UI suited to a queue/detail/analytics dashboard. |
 | Deployment | Render (backend), Vercel (frontend) | Both have functional free tiers and native support for Python/FastAPI and static/Vite frontends respectively. |
 | Version control | Git + GitHub | Incremental commits per milestone (scaffold → backend → classifier → reply generation → frontend → deployment → docs). |
