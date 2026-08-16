@@ -112,11 +112,11 @@ rather split platforms; the backend steps above are unaffected either way.
 
 ## Screenshots
 
-_Pending — see [docs/screenshots/README.md](./docs/screenshots/README.md) for the exact
-3 shots needed and their filenames; this section will embed them once added._
-
-<!--
+**Inbox** — queue sorted by urgency, message detail panel with intent/urgency badges:
 ![Inbox](./docs/screenshots/inbox.png)
+
+**AI-drafted reply** — generated via Groq, editable before sending:
 ![AI reply suggestion](./docs/screenshots/ai-reply.png)
+
+**Analytics** — KPI cards, intent donut chart, urgency and channel breakdowns:
 ![Analytics](./docs/screenshots/analytics.png)
--->
